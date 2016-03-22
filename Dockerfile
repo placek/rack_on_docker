@@ -16,12 +16,11 @@ RUN yum -y update && yum -y install patch gcc-c++ make bzip2 autoconf automake l
     && make install \
     && rm -r /usr/src/ruby
 
-RUN echo 'gem: --no-rdoc --no-ri' >> "$HOME/.gemrc"
+RUN mkdir -p /www
+WORKDIR /www
 
-ENV GEM_HOME /usr/local/bundle
-ENV PATH $GEM_HOME/bin:$PATH
-RUN gem install bundler \
-  && bundle config --global path "$GEM_HOME" \
-  && bundle config --global bin "$GEM_HOME/bin"
+RUN gem install bundler
+RUN echo "gem: --no-rdoc --no-ri" >> ".gemrc"
 
-ENV BUNDLE_APP_CONFIG $GEM_HOME
+COPY Gemfile Gemfile.lock ./
+RUN gem install bundler && bundle install --jobs 20 --retry 5
