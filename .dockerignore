@@ -1,3 +1,5 @@
 README.md
 .ruby-version
 .ruby-gemset
+*~
+*.sw[po]
