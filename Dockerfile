@@ -25,7 +25,7 @@ RUN yum -y update && yum -y install patch gcc-c++ make bzip2 autoconf automake l
 
 
 ## CREATE ENVIRONMENT
-RUN mkdir -p /www
+RUN mkdir -p /www/{log,tmp/{pids,sockets}}
 WORKDIR /www
 
 
@@ -47,7 +47,9 @@ COPY . ./
 ## LAUNCH APPLICATION
 # set internal port
 ENV APP_PORT 3000
+# set rack environment (can be replaced with RAILS_ENV)
+ENV RACK_ENV development
 # expose port
 EXPOSE "$APP_PORT"
 # run server
-CMD bundle exec ruby config.ru -p "$APP_PORT" -o 0.0.0.0
+CMD bundle exec unicorn --config-file unicorn.rb --listen "0.0.0.0:$APP_PORT" --env "$RACK_ENV"

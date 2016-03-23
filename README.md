@@ -1,12 +1,12 @@
 ### Description
 
-This is an example on how one can run rake web server in docker container.
+This is an example on how one can run rake web server on unicorn in docker container.
 
 ### Tips
 
 * Changing `Dockerfile` at `ENV RUBY_MAJOR 2.3` and `ENV RUBY_VERSION 2.3.0` will affect used ruby version.
 * Changing `Dockerfile` at `ENV APP_PORT 3000` will not affect application.
-* Bind `0.0.0.0` address at `CMD bundle exec ruby config.ru -p "$APP_PORT" -o 0.0.0.0` in `Dockerfile` is important to run web application!
+* Bind `0.0.0.0` address at `CMD bundle exec unicorn --config-file unicorn.rb --listen "0.0.0.0:$APP_PORT" --env "$RACK_ENV"` in `Dockerfile` is important to run web application!
 * Files in `.dockerignore` will not be added to docker image.
 * To build image type `docker build -t placek/rake_on_docker`.
 * To run image type `docker run -tP placek/rake_on_docker`.
