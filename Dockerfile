@@ -8,7 +8,8 @@ MAINTAINER Paweł Placzyński <placzynski.pawel@gmail.com>
 ENV RUBY_MAJOR 2.3
 ENV RUBY_VERSION 2.3.0
 # get dependencies
-RUN yum -y update && yum -y install patch gcc-c++ make bzip2 autoconf automake libtool bison iconv-devel readline readline-devel zlib zlib-devel libyaml-devel libffi-devel openssl-devel \
+RUN yum -y update \
+    && yum -y install patch gcc-c++ make bzip2 autoconf automake libtool bison iconv-devel readline readline-devel zlib zlib-devel libyaml-devel libffi-devel openssl-devel \
 # clean yum cache
     && yum clean all \
 # download and extract ruby tarball
@@ -40,16 +41,28 @@ COPY Gemfile Gemfile.lock ./
 RUN bundle install --jobs 20 --retry 5
 
 
+## INSTALL NGINX
+# add yum repo configuration for nginx
+ADD nginx.repo /etc/yum.repos.d/nginx.repo
+# install nginx
+RUN yum -y update \
+    && yum -y install nginx \
+    && yum clean all \
+# remove nginx configuration...
+    && rm -rf /etc/nginx/*
+# ...and replace it with our configuration
+COPY nginx.conf /etc/nginx
+
+
 ## COPY PROJECT TO TARGET DOCKER IMAGE
 COPY . ./
 
 
 ## LAUNCH APPLICATION
-# set internal port
-ENV APP_PORT 3000
 # set rack environment (can be replaced with RAILS_ENV)
 ENV RACK_ENV development
 # expose port
-EXPOSE "$APP_PORT"
+EXPOSE 80
 # run server
-CMD bundle exec unicorn --config-file unicorn.rb --listen "0.0.0.0:$APP_PORT" --env "$RACK_ENV"
+CMD bundle exec unicorn --config-file unicorn.rb --env "$RACK_ENV" --daemonize \
+    && nginx -g 'daemon off;'
