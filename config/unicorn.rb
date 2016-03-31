@@ -1,4 +1,4 @@
-@directory = File.expand_path(".")
+@directory = File.expand_path('.')
 
 working_directory @directory
 
