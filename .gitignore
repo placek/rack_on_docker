@@ -1,4 +1,5 @@
 log
 tmp
-*~
-*.sw[po]
+**~
+**.sw[po]
+**.sqlite3

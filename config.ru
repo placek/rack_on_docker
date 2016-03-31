@@ -1,9 +1,2 @@
-require 'sinatra'
-
-class MyApp < Sinatra::Base
-  get '/' do
-    'Hello World!'
-  end
-end
-
+require_relative 'my_app'
 run MyApp

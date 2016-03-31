@@ -1,7 +1,10 @@
 README.md
 .ruby-version
 .ruby-gemset
+.gitignore
 log
 tmp
-*~
-*.sw[po]
+data
+**~
+**.sw[po]
+**.sqlite3
