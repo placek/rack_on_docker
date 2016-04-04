@@ -51,9 +51,9 @@ This is an example on how one can run rack web server with sqlite3 database on u
 #### Other
 
 * Files in `.dockerignore` will not be added to docker image.
-* Rake task `db:console[environment]` launches `irb` with access to database.
-  * To run such console type `docker run --tty --interactive --rm placek/rack_on_docker /bin/bash` to connect to database in separate container, or...
-  * ...you can enter already running container `docker exec --interactive --tty rack_on_docker_container /bin/bash`.
+* Rake task `db:console` launches `irb` with access to database.
+  * To run such console on already running container type `docker exec --interactive --tty rack_on_docker_container bundle exec rake db:console`, or...
+  * ...connect to database in separate container typing `docker run --tty --interactive --rm placek/rack_on_docker bundle exec rake db:console`.
 * Environment variables:
   * `APP_DIRECTORY` - directory with application source code
   * `NGINX_PID_FILE` - path to the file where the pid of nginx server process is stored
@@ -71,22 +71,14 @@ This is an example on how one can run rack web server with sqlite3 database on u
   * `DATA_VOLUME` - volume directory shared by the _data-only_ container
   * `DATABASE_FILE` - path to sqlite3 database
   * `RACK_ENV` - environment for rack server
-  * `RUBY_MAJOR` - major version of ruby implementation, used in url to package, e.g. `2.3` in `https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.0.tar.gz`
-  * `RUBY_VERSION` - minor version of ruby implementation, used in url to package, e.g. `2.3.0` in `https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.0.tar.gz`
+  * `RUBY_MAJOR` - major version of ruby implementation, used to specify an URL to package, e.g. `2.3` in `https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.0.tar.gz`
+  * `RUBY_VERSION` - minor version of ruby implementation, used to specify an URL to package, e.g. `2.3.0` in `https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.0.tar.gz`
 
 ### Web application address
 
-To enter the web application via browser you need to get port that is bind to application.
-Use `docker ps` to get port:
+To enter the web application via browser you need to get IP and port of the application.
 
-```
-$ docker ps
-CONTAINER ID        IMAGE                   COMMAND                  CREATED             STATUS              PORTS                     NAMES
-c8598bb2b978        placek/rack_on_docker   "/bin/sh -c 'bundle e"   5 minutes ago       Up 5 minutes        0.0.0.0:32769->3000/tcp   rack_on_docker_container
-```
-
-The expression `0.0.0.0:32769->3000/tcp` sais that app is running on port `32769`.
-
+#### IP
 
 To get the IP address that app is running on type `docker-machine ip $DOCKER_MACHINE_NAME`:
 
@@ -95,7 +87,16 @@ $ docker-machine ip $DOCKER_MACHINE_NAME
 196.168.99.100
 ```
 
-It means that applicaion runs at [http://192.168.99.100:32769](http://192.168.99.100:32769).
+#### Port
+
+Use `docker port rack_on_docker_container` to get port:
+
+```
+$ docker port rack_on_docker_container
+0.0.0.0:32769->80/tcp
+```
+
+The expression `0.0.0.0:32769->80/tcp` sais that app is running on port `32769`.
 
 ### TODO
 
