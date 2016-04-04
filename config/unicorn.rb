@@ -1,15 +1,7 @@
-@directory = File.expand_path('.')
-
-working_directory @directory
-
-worker_processes 5
-timeout 30
-
-# set process id path
-pid "#{@directory}/tmp/pids/unicorn.pid"
-# set socket file
-listen "#{@directory}/tmp/sockets/unicorn.sock", backlog: 64
-
-# set log file paths
-stderr_path "#{@directory}/log/unicorn.stderr.log"
-stdout_path "#{@directory}/log/unicorn.stdout.log"
+working_directory ENV['APP_DIRECTORY']
+pid               ENV['UNICORN_PID_FILE']
+listen            ENV['UNICORN_SOCKET_FILE'], backlog: 64
+worker_processes  ENV['UNICORN_WORKER_PROCESSES'].to_i
+timeout           ENV['UNICORN_TIMEOUT'].to_i
+stdout_path       ENV['UNICORN_STDOUT_LOG_FILE']
+stderr_path       ENV['UNICORN_STDERR_LOG_FILE']

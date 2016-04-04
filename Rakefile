@@ -6,9 +6,7 @@ namespace :db do
   end
 
   desc 'run irb console'
-  task :console, :environment do |_task, args|
-    ENV['RACK_ENV'] = args[:environment] || 'development'
-
+  task :console do
     exec 'irb -r irb/completion -r ' + File.expand_path('./my_app')
   end
 end

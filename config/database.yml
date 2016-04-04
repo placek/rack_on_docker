@@ -1,5 +1,5 @@
 development:
   adapter: sqlite3
-  database: <%= ENV['DATABASE_PATH'] %>
+  database: <%= ENV['DATABASE_FILE'] %>
   pool: 5
   timeout: 5000
