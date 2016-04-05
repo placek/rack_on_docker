@@ -6,6 +6,7 @@ events {
 }
 
 http {
+  client_max_body_size 20M;
   server {
     listen <%= ENV['NGINX_LISTEN_PORT'] %>;
     server_name _;
@@ -14,12 +15,7 @@ http {
     root <%= ENV['APP_DIRECTORY'] %>/public;
 
     location / {
-      proxy_redirect off;
-      proxy_pass http://unicorn-server;
+      proxy_pass http://unix:<%= ENV['UNICORN_SOCKET_FILE'] %>:/;
     }
-  }
-
-  upstream unicorn-server {
-    server unix:<%= ENV['UNICORN_SOCKET_FILE'] %>;
   }
 }

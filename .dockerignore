@@ -8,3 +8,4 @@ data
 **~
 **.sw[po]
 **.sqlite3
+public/uploads/*

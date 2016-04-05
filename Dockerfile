@@ -44,7 +44,7 @@ RUN echo -e "[nginx]\nname=nginx repository\nbaseurl=http://nginx.org/packages/c
     && rm -rf /etc/nginx/*
 
 COPY config/nginx.conf.erb /etc/nginx/
-RUN ruby -rerb -e "puts ERB.new(File.read('/etc/nginx/nginx.conf.erb')).result" > /etc/nginx/nginx.conf \
+RUN erb /etc/nginx/nginx.conf.erb > /etc/nginx/nginx.conf \
     && rm /etc/nginx/nginx.conf.erb
 
 RUN mkdir -p $APP_DIRECTORY $APP_LOGS_DIRECTORY $APP_PIDS_DIRECTORY $APP_SOCKETS_DIRECTORY

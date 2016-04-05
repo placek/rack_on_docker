@@ -1,4 +1,18 @@
 img(src='docker-ruby.png')
-ul
-  - @users.each do |user|
-    li= user.name
+
+form(action='/users' enctype='multipart/form-data' method='post')
+  input(name='user[name]' type='text')
+  input(name='user[file]' type='file')
+  input(type='submit' value='add user')
+
+table
+  thead
+    tr
+      th Avatar
+      th Name
+  tbody
+    - @users.each do |user|
+      tr
+        td
+          img(src=user.avatar_url style='width: 100px;')
+        td= user.name
