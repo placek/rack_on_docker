@@ -5,7 +5,6 @@ ENV APP_DIRECTORY /www
 ENV APP_LOGS_DIRECTORY $APP_DIRECTORY/log
 ENV APP_PIDS_DIRECTORY $APP_DIRECTORY/tmp/pids
 ENV APP_SOCKETS_DIRECTORY $APP_DIRECTORY/tmp/sockets
-ENV DATA_VOLUME /data
 
 ENV NGINX_PID_FILE $APP_PIDS_DIRECTORY/nginx.pid
 ENV UNICORN_PID_FILE $APP_PIDS_DIRECTORY/unicorn.pid
@@ -17,21 +16,22 @@ ENV UNICORN_STDERR_LOG_FILE $APP_LOGS_DIRECTORY/unicorn.stderr.log
 
 ENV UNICORN_SOCKET_FILE $APP_SOCKETS_DIRECTORY/unicorn.sock
 
-ENV DATABASE_FILE $DATA_VOLUME/db.sqlite3
+ENV POSTGRES_DATABASE_NAME my_app_database
+ENV POSTGRES_DATABASE_USER postgres
 
 ENV NGINX_WORKER_PROCESSES 1
 ENV UNICORN_WORKER_PROCESSES 5
 ENV NGINX_WORKER_CONNECTIONS 1024
 ENV NGINX_LISTEN_PORT 80
 ENV UNICORN_TIMEOUT 30
-ENV RACK_ENV development
+ENV RACK_ENV production
 
 ENV RUBY_MAJOR 2.3
 ENV RUBY_VERSION 2.3.0
 
 RUN echo -e "[nginx]\nname=nginx repository\nbaseurl=http://nginx.org/packages/centos/\$releasever/\$basearch/\ngpgcheck=0\nenabled=1\n" > /etc/yum.repos.d/nginx.repo \
     && yum -y update \
-    && yum -y install patch gcc-c++ make bzip2 autoconf automake libtool bison iconv-devel readline readline-devel zlib zlib-devel libyaml-devel libffi-devel openssl-devel sqlite-devel nginx \
+    && yum -y install patch gcc-c++ make bzip2 autoconf automake libtool bison iconv-devel readline readline-devel zlib zlib-devel libyaml-devel libffi-devel openssl-devel sqlite-devel postgresql-devel nginx \
     && yum clean all \
     && mkdir -p /usr/src/ruby \
     && curl -O "https://cache.ruby-lang.org/pub/ruby/$RUBY_MAJOR/ruby-$RUBY_VERSION.tar.gz" \
@@ -53,7 +53,7 @@ WORKDIR $APP_DIRECTORY
 COPY Gemfile Gemfile.lock ./
 RUN gem install bundler \
     && echo "gem: --no-rdoc --no-ri" >> ".gemrc" \
-    && bundle install --jobs 20 --retry 5
+    && bundle install --jobs 20 --retry 5 --with $RACK_ENV --deployment
 
 COPY . ./
 

@@ -8,7 +8,8 @@ end
 
 class MyApp < Sinatra::Base
   register Sinatra::ActiveRecordExtension
-  set :database_file, File.expand_path('./config/database.yml')
+  set :app_root, File.expand_path('.')
+  set :database_file, File.join(settings.app_root, 'config', 'database.yml')
 
   get '/' do
     @users = User.all
