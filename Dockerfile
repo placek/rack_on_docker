@@ -2,21 +2,30 @@ FROM centos:latest
 MAINTAINER Paweł Placzyński <placzynski.pawel@gmail.com>
 
 ENV APP_DIRECTORY /www
-ENV NGINX_PID_FILE /www/tmp/pids/nginx.pid
-ENV NGINX_WORKER_PROCESSES 1
-ENV NGINX_WORKER_CONNECTIONS 1024
-ENV NGINX_ACCESS_LOG_FILE /www/log/nginx.access.log
-ENV NGINX_ERROR_LOG_FILE /www/log/nginx.error.log
-ENV NGINX_LISTEN 80
-ENV UNICORN_PID_FILE /www/tmp/pids/unicorn.pid
-ENV UNICORN_SOCKET_FILE /www/tmp/sockets/unicorn.sock
-ENV UNICORN_WORKER_PROCESSES 5
-ENV UNICORN_TIMEOUT 30
-ENV UNICORN_STDOUT_LOG_FILE /www/log/unicorn.stdout.log
-ENV UNICORN_STDERR_LOG_FILE /www/log/unicorn.stderr.log
+ENV APP_LOGS_DIRECTORY $APP_DIRECTORY/log
+ENV APP_PIDS_DIRECTORY $APP_DIRECTORY/tmp/pids
+ENV APP_SOCKETS_DIRECTORY $APP_DIRECTORY/tmp/sockets
 ENV DATA_VOLUME /data
-ENV DATABASE_FILE /data/db.sqlite3
+
+ENV NGINX_PID_FILE $APP_PIDS_DIRECTORY/nginx.pid
+ENV UNICORN_PID_FILE $APP_PIDS_DIRECTORY/unicorn.pid
+
+ENV NGINX_ACCESS_LOG_FILE $APP_LOGS_DIRECTORY/nginx.access.log
+ENV NGINX_ERROR_LOG_FILE $APP_LOGS_DIRECTORY/nginx.error.log
+ENV UNICORN_STDOUT_LOG_FILE $APP_LOGS_DIRECTORY/unicorn.stdout.log
+ENV UNICORN_STDERR_LOG_FILE $APP_LOGS_DIRECTORY/unicorn.stderr.log
+
+ENV UNICORN_SOCKET_FILE $APP_SOCKETS_DIRECTORY/unicorn.sock
+
+ENV DATABASE_FILE $DATA_VOLUME/db.sqlite3
+
+ENV NGINX_WORKER_PROCESSES 1
+ENV UNICORN_WORKER_PROCESSES 5
+ENV NGINX_WORKER_CONNECTIONS 1024
+ENV NGINX_LISTEN_PORT 80
+ENV UNICORN_TIMEOUT 30
 ENV RACK_ENV development
+
 ENV RUBY_MAJOR 2.3
 ENV RUBY_VERSION 2.3.0
 
@@ -38,7 +47,7 @@ COPY config/nginx.conf.erb /etc/nginx/
 RUN ruby -rerb -e "puts ERB.new(File.read('/etc/nginx/nginx.conf.erb')).result" > /etc/nginx/nginx.conf \
     && rm /etc/nginx/nginx.conf.erb
 
-RUN mkdir -p $APP_DIRECTORY/{log,tmp/{pids,sockets}}
+RUN mkdir -p $APP_DIRECTORY $APP_LOGS_DIRECTORY $APP_PIDS_DIRECTORY $APP_SOCKETS_DIRECTORY
 WORKDIR $APP_DIRECTORY
 
 COPY Gemfile Gemfile.lock ./
@@ -48,7 +57,7 @@ RUN gem install bundler \
 
 COPY . ./
 
-EXPOSE $NGINX_LISTEN
+EXPOSE $NGINX_LISTEN_PORT
 CMD bundle exec rake db:create db:migrate \
     && bundle exec unicorn --config-file config/unicorn.rb --env $RACK_ENV --daemonize \
     && nginx -g 'daemon off;'

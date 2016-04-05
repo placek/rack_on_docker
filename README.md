@@ -61,7 +61,7 @@ This is an example on how one can run rack web server with sqlite3 database on u
   * `NGINX_WORKER_CONNECTIONS` - maximum number of connections to nginx server
   * `NGINX_ACCESS_LOG_FILE` - log file path - nginx access log
   * `NGINX_ERROR_LOG_FILE` - log file path - nginx error log
-  * `NGINX_LISTEN` - port that container is exposing
+  * `NGINX_LISTEN_PORT` - port that container is exposing
   * `UNICORN_PID_FILE` - path to the file where the pid of unicorn server process is stored
   * `UNICORN_SOCKET_FILE` - path to the unix socket of unicorn server
   * `UNICORN_WORKER_PROCESSES` - number of workers for unicorn server
