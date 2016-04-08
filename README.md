@@ -21,7 +21,7 @@ This is an example on how one can run rack web server with postgres database and
 * To terminate containers type:
   * `docker kill rack_on_docker_container && docker rm rack_on_docker_container`
   * `docker rm data_container` (warning - it will remove the uploaded files)
-  * `docker rm postgres_container` (warning - it will remove the database)
+  * `docker rm --force postgres_container` (warning - it will remove the database)
 
 #### Data-only container
 
@@ -45,7 +45,7 @@ This is an example on how one can run rack web server with postgres database and
 * Other containers can use the `postgres_container`'s database by launching them with `--link postgres_container:postgres` parameter. For instance: `docker run --interactive --tty --rm postgres_container:postgres postgres /bin/bash`.
   * The access to the database can be established using environment variables that are automaticaly set by `--link` option. See `docker run --interactive --tty --rm --link postgres_container:postgres postgres env`.
 * The container will be visible via `docker ps --all` but not via `docker ps`.
-* To terminate container type `docker rm postgres_container`.
+* To terminate container type `docker rm --force postgres_container`.
 
 #### Application container
 
