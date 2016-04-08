@@ -53,7 +53,7 @@ WORKDIR $APP_DIRECTORY
 COPY Gemfile Gemfile.lock ./
 RUN gem install bundler \
     && echo "gem: --no-rdoc --no-ri" >> ".gemrc" \
-    && bundle install --jobs 20 --retry 5 --with $RACK_ENV --deployment
+    && bundle install --jobs 20 --retry 5 --deployment
 
 COPY . ./
 

@@ -22,6 +22,8 @@ This is an example on how one can run rack web server with postgres database and
   * `docker kill rack_on_docker_container && docker rm rack_on_docker_container`
   * `docker rm data_container` (warning - it will remove the uploaded files)
   * `docker rm --force postgres_container` (warning - it will remove the database)
+* To run tests type:
+  * `docker run --tty --interactive --env RACK_ENV=test --rm placek/rack_on_docker /bin/bash -c 'bundle exec rake db:schema:load && bundle exec rspec'`
 
 #### Data-only container
 
@@ -70,6 +72,10 @@ This is an example on how one can run rack web server with postgres database and
 * Rake task `db:console` launches `irb` with access to database.
   * To run such console on already running container type `docker exec --interactive --tty rack_on_docker_container  bundle exec rake db:console`, or...
   * ...connect to database in separate container typing `docker run --tty --interactive  --link postgres_container:postgres --rm placek/rack_on_docker bundle exec rake db:console`.
+* To run tests type `docker run --tty --interactive --env RACK_ENV=test --rm placek/rack_on_docker /bin/bash -c 'bundle exec rake db:schema:load && bundle exec rspec'`
+  * `--tty` and `--interactive` params allow to display results and interrupt process with `^C` when needed.
+  * `--env RACK_ENV=test` sets the environment variable (needed, for instance, to choose the database configuration).
+  * `--rm` removes container after it's done.
 * Environment variables:
   * `<NAME>_DIRECTORY` - directories used by application
   * `NGINX_PID_FILE` - path to the file where the pid of nginx server process is stored
@@ -117,5 +123,4 @@ The expression `0.0.0.0:32769->80/tcp` sais that app is running on port `32769`.
 
 ### TODO
 
-* howto: run tests using docker
 * howto: switch containers after making a new build
