@@ -1,4 +1,4 @@
-FROM centos:latest
+FROM centos:centos7
 MAINTAINER Paweł Placzyński <placzynski.pawel@gmail.com>
 
 ENV APP_DIRECTORY /www
