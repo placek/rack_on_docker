@@ -1,5 +1,5 @@
 # based on latest centos image
-FROM centos:latest
+FROM centos:centos7
 
 # who maintains it
 MAINTAINER Paweł Placzyński <placzynski.pawel@gmail.com>
@@ -33,5 +33,5 @@ COPY . ./
 
 # run application
 ENV APP_PORT 3000
-EXPOSE "$APP_PORT"
-CMD ["bundle", "exec", "ruby", "config.ru", "-p", "$APP_PORT", "-o", "0.0.0.0"]
+EXPOSE $APP_PORT
+CMD bundle exec ruby config.ru -p $APP_PORT -o 0.0.0.0
