@@ -3,7 +3,7 @@ require 'sinatra/activerecord'
 require 'slim'
 require 'digest/sha1'
 
-APP_ROOT = File.expand_path('.')
+APP_ROOT = File.expand_path(?.)
 UPLOADS_DIR = File.join(APP_ROOT, 'public', 'uploads')
 
 class User < ActiveRecord::Base
@@ -40,7 +40,7 @@ UploadedFile = Struct.new(:file_params) do
   end
 
   def save
-    File.open(path, 'w') do |file|
+    File.open(path, ?w) do |file|
       file.write(content)
     end
   end
@@ -51,9 +51,7 @@ class MyApp < Sinatra::Base
   set :database_file, File.join(APP_ROOT, 'config', 'database.yml')
 
   helpers do
-    def user_params
-      params[:user]
-    end
+    def user_params() params[:user] end
   end
 
   get '/' do

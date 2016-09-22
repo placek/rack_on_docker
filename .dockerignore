@@ -1,7 +1,6 @@
 README.md
 .ruby-version
 .ruby-gemset
-.gitignore
 log
 tmp
 data
@@ -9,3 +8,5 @@ data
 **.sw[po]
 **.sqlite3
 public/uploads/*
+.git*
+docker-compose.yml
