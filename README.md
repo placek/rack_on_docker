@@ -17,6 +17,9 @@ This is an example on how one can run rack web server with postgres database and
   * `docker-compose down` (warning - it will remove the database)
 * To run tests type:
   * `docker-compose run -e RACK_ENV=test --rm web /bin/bash -c 'bundle exec rake db:schema:load && bundle exec rspec'`
+* To rebuild `web` image:
+  * build image with `docker-compose build web`
+  * restart image with `docker-compose up -d web`
 
 #### Other
 
@@ -33,7 +36,3 @@ This is an example on how one can run rack web server with postgres database and
   * `UNICORN_STDOUT_LOG_FILE` - log file path - unicorn stdout
   * `UNICORN_STDERR_LOG_FILE` - log file path - unicorn stderr
   * `RACK_ENV` - environment for rack server
-
-### TODO
-
-* howto: switch containers after making a new build
